@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Hello Ionic</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+  <h3>Welcome to your first Ionic app!</h3>
+
+  <button ion-button full (click)="schedule()">Sched</button>
+
+  <p>
+    <button ion-button color="primary" menuToggle>Toggle Menu</button>
+  </p>
+  <!-- <p *ngFor="let p of nots ">
+    {{p|json}
+  </p> -->
+  <ion-list>
+    <ion-item class="text" *ngFor="let item of items | async">
+      {{item | json}}
+    </ion-item>
+  </ion-list>
+
+</ion-content>
