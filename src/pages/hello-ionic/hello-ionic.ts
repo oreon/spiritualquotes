@@ -19,7 +19,7 @@ export interface Quote extends BaseEntity{
 })
 export class HelloIonicPage {
 
-  items: Observable<any[]>;
+  items: any[];
 
   constructor(
     public navCtrl: NavController, 
@@ -31,7 +31,9 @@ export class HelloIonicPage {
     this.plt.ready().then(x => {
       //this.getNots();
     })
-    this.items = this.fireService.getRecords();
+    this.fireService.getRecords()
+    .subscribe(
+      x => this.items = x);
   }
 
   schedule() {
@@ -57,7 +59,7 @@ export class HelloIonicPage {
       console.log( dt.toDate() , dt.format("HH"))
       this.localNotifications.schedule({
         id:i,
-        text: 'Gurmat Tuk ' + i,
+        text: 'Gurmat Tuk ' + this.items[i].text,
         //trigger: { every: 'minute', count: 15 },
         trigger: { at: dt.toDate() },
         led: 'FF0000',

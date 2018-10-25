@@ -10,7 +10,7 @@
 
 <ion-content padding>
 
-  <h3>Welcome to your first Ionic app!</h3>
+  <h3>Constantly stay immersed in Naam !</h3>
 
   <button ion-button full (click)="schedule()">Sched</button>
 
@@ -21,8 +21,8 @@
     {{p|json}
   </p> -->
   <ion-list>
-    <ion-item class="text" *ngFor="let item of items | async">
-      {{item | json}}
+    <ion-item class="text" *ngFor="let item of items ">
+      {{item.text}}
     </ion-item>
   </ion-list>
 

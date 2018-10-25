@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "776583101410",
+    "firebase_url": "https://aid4kids-ed95a.firebaseio.com",
+    "project_id": "aid4kids-ed95a",
+    "storage_bucket": "aid4kids-ed95a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776583101410:android:a70c9c6623013bdf",
+        "android_client_info": {
+          "package_name": "com.oreon.aid4kids"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "776583101410-ls34hf3bfu4t079t22uumg6jana0oqe0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnHijOzossZ0X-6s3gX8jgxUMyu_UBTjY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

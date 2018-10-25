@@ -21,10 +21,7 @@ import * as firebase from 'firebase/app';
 type CollectionPredicate<T>   = string |  AngularFirestoreCollection<T>;
 type DocPredicate<T>          = string |  AngularFirestoreDocument<T>;
 
-@Injectable(
-  {
-    providedIn: 'root'
-  })
+@Injectable()
 export class FirestoreService {
 
 
