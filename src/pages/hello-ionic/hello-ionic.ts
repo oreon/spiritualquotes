@@ -7,6 +7,8 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { BaseEntity } from '../../base/base-entity';
 import { BaseFireService } from '../../base/BaseFireService';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { SettingsProvider } from '../../providers/settings/settings';
 
 
 export interface Quote extends BaseEntity{
@@ -20,33 +22,39 @@ export interface Quote extends BaseEntity{
 export class HelloIonicPage {
 
   items: any[];
+  public settingsForm: FormGroup;
 
   constructor(
     public navCtrl: NavController, 
     private fireService :BaseFireService<Quote>,
     private localNotifications: LocalNotifications,
     public plt: Platform,
-  
+    private fb: FormBuilder,
+    private settings:SettingsProvider
   ) {
     this.plt.ready().then(x => {
-      //this.getNots();
+      this.getNots();
     })
     this.fireService.getRecords()
     .subscribe(
       x => this.items = x);
   }
 
+  save(){
+    this.settings.setSettings(this.settingsForm.value())
+  }
+
   schedule() {
     //this.localNotifications.hasPermission().then(x => alert(x))
     if (!this.localNotifications.hasPermission())
       this.localNotifications.requestPermission();
-    // this.localNotifications.schedule({
-    //   id: 1,
-    //   text: 'Single ILocalNotification',
-    //   // sound: this.plt.is('android')? 'file://sound.mp3':
-    //   //  'file://beep.caf',
-    //   data: { secret: "xcxcxc" }
-    // });
+    this.localNotifications.schedule({
+      id: 1,
+      text: 'Single ILocalNotification',
+      // sound: this.plt.is('android')? 'file://sound.mp3':
+      //  'file://beep.caf',
+      data: { secret: "xcxcxc" }
+    });
     let end = 19
     let start = moment()//.startOf('hour').fromNow();
     console.log(start.toDate())
@@ -77,8 +85,24 @@ export class HelloIonicPage {
 
   getNots() {
     this.localNotifications.getAllScheduled()
-      .then(x => this.nots = x)
+      .then(x => {
+        this.nots = x
+        this.nots.map( n => 
+          console.log(n)
+        )
+      })
     //return this.nots;
+  }
+
+ 
+
+  private createForm(): void {
+    this.settingsForm = this.fb.group({
+      start: ['9', []],
+      end: ['7', []],
+      freq: ['60', [Validators.required]],
+      
+    });
   }
 
 

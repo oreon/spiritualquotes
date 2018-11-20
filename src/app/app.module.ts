@@ -11,12 +11,14 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import {AngularFirestoreModule} from 'angularfire2/firestore';
 import { LocalNotifications } from '@ionic-native/local-notifications'
-
+import { IonicStorageModule } from '@ionic/storage';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule, AngularFireDatabase } from '@angular/fire/database';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { BaseFireService } from '../base/BaseFireService';
 import { FirestoreService } from '../base/firestore.service';
+import { SettingsProvider } from '../providers/settings/settings';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 var config = {
   apiKey: "AIzaSyCTyxpg77b9mj-PTAvqLnwzjXlmsInLBkk",
@@ -50,7 +52,9 @@ export const firebaseConfig = {
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
-  
+    IonicStorageModule.forRoot(),
+    FormsModule,
+    ReactiveFormsModule
 
   ],
   bootstrap: [IonicApp],
@@ -67,7 +71,8 @@ export const firebaseConfig = {
     AngularFireDatabase,
     BaseFireService,
     FirestoreService,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    SettingsProvider
   ]
 })
 export class AppModule {}
