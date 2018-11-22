@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
 import { Observable} from 'rxjs'
-import { LocalNotifications, ELocalNotificationTriggerUnit } from '@ionic-native/local-notifications';
 import { Platform, NavController } from 'ionic-angular';
-import * as moment from 'moment';
-import { AngularFireDatabase } from '@angular/fire/database';
-import { AngularFirestore } from 'angularfire2/firestore';
 import { BaseEntity } from '../../base/base-entity';
 import { BaseFireService } from '../../base/BaseFireService';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { SettingsProvider } from '../../providers/settings/settings';
 
 
 export interface Quote extends BaseEntity{
@@ -20,15 +18,33 @@ export interface Quote extends BaseEntity{
 export class HelloIonicPage {
 
   items: any[];
-  
+  public settingsForm: FormGroup;
+
   constructor(
     public navCtrl: NavController, 
     private fireService :BaseFireService<Quote>,
-    private localNotifications: LocalNotifications,
+    public plt: Platform,
+    private fb: FormBuilder,
+    private settings:SettingsProvider
   ) {
-    console.log("Hello Page Init");
     this.fireService.getRecords()
     .subscribe(
       x => this.items = x);
+    this.createForm();
   }
+
+  save(){
+    console.log(this.settingsForm.value);
+    this.settings.setSettings(this.settingsForm.value)
+  }
+
+  private createForm(): void {
+    this.settingsForm = this.fb.group({
+      start: ['9', []],
+      end: ['7', []],
+      freq: ['60', [Validators.required]],
+    });
+  }
+
+
 }

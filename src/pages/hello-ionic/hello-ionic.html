@@ -1,29 +1,45 @@
 <ion-header>
   <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
+    <button ion-button menuToggle><ion-icon name="menu"></ion-icon></button>
     <ion-title>Hello Ionic</ion-title>
   </ion-navbar>
 </ion-header>
 
-
 <ion-content padding>
-
   <h3>Constantly stay immersed in Naam !</h3>
 
-  <button ion-button full (click)="schedule()">Sched</button>
+  <ion-list no-lines>
+    <form [formGroup]="settingsForm">
+      <ion-item>
+        <ion-label floating>Start</ion-label>
+        <ion-input formControlName="start" type="number"></ion-input>
+      </ion-item>
 
-  <!-- <p>
-    <button ion-button color="primary" menuToggle>Toggle Menu</button>
-  </p> -->
-  <!-- <p *ngFor="let p of nots ">
-    {{p|json}
-  </p> -->
-  <ion-list>
-    <ion-item class="text" *ngFor="let item of items ">
-      {{item.text}}
-    </ion-item>
+      <ion-item>
+        <ion-label floating>End</ion-label>
+        <ion-input formControlName="end" type="number"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label floating>Frequency</ion-label>
+        <ion-select formControlName="freq">
+          <ion-option value="30" checked="true">30 minutes</ion-option>
+          <ion-option value="60">1 Hour</ion-option>
+          <ion-option value="120">2 Hours</ion-option>
+        </ion-select>
+      </ion-item>
+    </form>
   </ion-list>
 
+  <button ion-button full color="primary" (click)="save()">
+    Create Account!
+  </button>
+
+  <!-- <button ion-button full (click)="schedule()">Sched</button> -->
+
+  <ion-list>
+    <ion-item class="text" *ngFor="let item of items">
+      {{ item.text }}
+    </ion-item>
+  </ion-list>
 </ion-content>

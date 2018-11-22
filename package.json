@@ -1,8 +1,8 @@
 {
-    "name": "MyIonicProject",
+    "name": "spiritual_quotes",
     "version": "0.0.1",
-    "author": "Ionic Framework",
-    "homepage": "http://ionicframework.com/",
+    "author": "Oreon",
+    "homepage": "http://oreonconsultancy.com/",
     "private": true,
     "scripts": {
         "start": "ionic-app-scripts serve",
@@ -70,6 +70,7 @@
             "cordova-sqlite-storage": {}
         },
         "platforms": [
+            "browser",
             "android",
             "ios"
         ]

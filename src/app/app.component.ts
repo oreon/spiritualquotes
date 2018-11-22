@@ -29,6 +29,8 @@ export class MyApp {
   pages: Array<{title: string, component: any}>;
   quotes: any[];
 
+  DEFAULT_SETTINGS = {noOfNotifs: 5, timeGap:60, startTime: moment({ hour:9, minute:0 }), endTime: moment({ hour:19, minute:0 })};
+
   constructor(
     public platform: Platform,
     public menu: MenuController,
@@ -72,61 +74,63 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
-      if (!this.localNotifications.hasPermission())
-        this.localNotifications.requestPermission();
+      if(this.platform.is('android')){
+        if (!this.localNotifications.hasPermission())
+          this.localNotifications.requestPermission();
+      
+      this.localNotifications.getAll()
+      .then(x => {
+        console.log(x);
+        console.log(x.length);
+        if(!x || x.length < this.DEFAULT_SETTINGS.noOfNotifs) {
+          console.log("Here we are supposed to do some shit");
+          this.storage.get('quotesData').then((quoteData) => {
+            console.log('Quotes from local storage', quoteData);
+            const timeGap = (quoteData && quoteData.timeGap) ? quoteData.timeGap : this.DEFAULT_SETTINGS.timeGap;
+            const startTime = (quoteData && quoteData.startTime) ? quoteData.startTime : this.DEFAULT_SETTINGS.startTime;
+            const endTime = (quoteData && quoteData.endTime) ? quoteData.endTime : this.DEFAULT_SETTINGS.endTime;
+            let fixedDate = moment();
 
-      this.storage.get('noOfNotifScheduled').then((noOfNotifScheduled) => {
-        console.log("App Start",noOfNotifScheduled);
-        if(!noOfNotifScheduled){
-          this.storage.set('noOfNotifScheduled', 10);
-        }
-      });
-      this.storage.get('quotesData').then((quoteData) => {
-        console.log('Quotes from local storage', quoteData);
-        const timeGap = (quoteData && quoteData.timeGap) ? quoteData.timeGap : 2;
-        const startTime = (quoteData && quoteData.startTime) ? quoteData.startTime : Date.now();
-        const endTime = (quoteData && quoteData.endTime) ? quoteData.endTime : Date.now();
-        
-        let fixedDate = moment();  
-        if(quoteData && quoteData.quotes && quoteData.quotes.length){
-            for(let i=0; i < quoteData.quotes.length; i++) {
-              let triggerTime = new Date(moment(fixedDate).add((i+1)*timeGap, 'minutes').format());
-              this.localNotifications.schedule({
-                id: i,
-                title: 'Gurmat Tuk',
-                text: quoteData.quotes[i].text,
-                trigger: { at:  triggerTime},
-                led: 'FFF000',
-                sound: this.platform.is('android') ? 'file://assets/sounds/sound.mp3': 'file://assets/sounds/beep.caf',
-                vibrate: true,
-                icon: 'file://assets/imgs/icon.png'
-              });
+            if(x && x.length) {
+              const max = x.reduce((prev, current) => (prev.id > current.id) ? prev : current);
+              console.log(max);
+              if(max && max.trigger && max.trigger.at){
+                fixedDate = moment(max.trigger.at);
+              }
             }
-        } else {
-          this.fireService.getRecords().subscribe(x => {
-            console.log(x);
-            this.quotes = x;
-            this.storage.set('quotesData', {'quotes': this.quotes, quoteNo: 0});
-            for(let i=0; i<this.quotes.length; i++) {
-              let triggerTime = new Date(moment(fixedDate).add((i+1)*timeGap, 'minutes').format());
-              this.localNotifications.schedule({
-                id: i,
-                title: 'Gurmat Tuk',
-                text: this.quotes[i].text,
-                trigger: { at:  triggerTime},
-                led: 'FFF000',
-                sound: this.platform.is('android') ? 'file://assets/sounds/sound.mp3': 'file://assets/sounds/beep.caf',
-                vibrate: true,
-                icon: 'file://assets/imgs/icon.png'
+
+            console.log(fixedDate);
+            if(quoteData && quoteData.quotes && quoteData.quotes.length) {
+              if(quoteData.quoteNo < quoteData.quotes.length) {
+                for(let i=quoteData.quoteNo; i < (quoteData.quoteNo + this.DEFAULT_SETTINGS.noOfNotifs); i++) {
+                  if(i<quoteData.quotes.length) {
+                    let triggerTime = moment(fixedDate).add(((i-quoteData.quoteNo)+1)*timeGap, 'minutes');                    
+                    this.scheduleLocalNotif(i, quoteData.quotes[i].text, triggerTime, ((i-quoteData.quoteNo)+1)*timeGap, startTime, endTime);
+                  }
+                }
+                quoteData.quoteNo += this.DEFAULT_SETTINGS.noOfNotifs;
+                this.storage.set('quotesData', quoteData);
+              } else {
+                console.log("Gurbani Quotes in local storage finished. Please download more!");
+              }
+            } else {
+              this.fireService.getRecords().subscribe(x => {
+                console.log(x);
+                this.quotes = x;
+                this.storage.set('quotesData', {'quotes': this.quotes, quoteNo: this.DEFAULT_SETTINGS.noOfNotifs});
+                for(let i=0; i < this.DEFAULT_SETTINGS.noOfNotifs; i++) {
+                  let triggerTime = moment(fixedDate).add((i+1)*timeGap, 'minutes');
+                  this.scheduleLocalNotif(i, this.quotes[i].text, triggerTime, (i+1)*timeGap, startTime, endTime);
+                }
               });
             }
           });
         }
       });
+    } else {
+      console.log("We are on a browser!!");
+    }
     });
-    this.localNotifications.on('trigger').subscribe(x => this.onNotifTrig(x));
-    this.localNotifications.on('click').subscribe(x => this.onNotifClick(x));
-    this.localNotifications.on('clear').subscribe(x => this.onNotifClear(x));
   }
 
   openPage(page) {
@@ -136,34 +140,28 @@ export class MyApp {
     this.nav.setRoot(page.component);
   }
 
+  scheduleLocalNotif(i, quoteText, triggerTime, timeGap, startTime, endTime) {
+    
+    if (triggerTime.isBefore(startTime)) {
+      triggerTime = moment(startTime);
+      triggerTime.add(timeGap, 'minutes');
+    } else if (triggerTime.isAfter(endTime)) {
+      triggerTime = moment(startTime).add(1, 'days');
+      triggerTime.add(timeGap, 'minutes');
+    }
 
-  onNotifTrig(notif) {
-    console.log(notif);
-  }
-  onNotifClick(notif) {
-    console.log("Notif Clicked", notif);
-    this.storage.get('noOfNotifScheduled').then((noOfNotifScheduled) => {
-      console.log(noOfNotifScheduled);
-      noOfNotifScheduled++;
-      this.storage.set('noOfNotifScheduled', noOfNotifScheduled);
+    console.log(triggerTime);
+
+    this.localNotifications.schedule({
+      id: i,
+      title: 'Gurmat Tuk',
+      text: quoteText,
+      trigger: { at:  new Date(triggerTime.format())},
+      led: 'FFF000',
+      sound: this.platform.is('android') ? 'file://assets/sounds/sound.mp3': 'file://assets/sounds/beep.caf',
+      vibrate: true,
+      icon: 'file://assets/imgs/icon.png'
     });
-    this.localNotifications.getAll()
-      .then(x => {
-        console.log(x);
-        console.log(x.length);
-      })
   }
-  onNotifClear(notif) {
-    console.log("Notif Cleared", notif);
-    this.storage.get('noOfNotifScheduled').then((noOfNotifScheduled) => {
-      console.log(noOfNotifScheduled);
-      noOfNotifScheduled = noOfNotifScheduled + 1;
-      this.storage.set('noOfNotifScheduled', noOfNotifScheduled);
-    });
-    this.localNotifications.getAll()
-      .then(x => {
-        console.log(x);
-        console.log(x.length);
-      });
-  }
+
 }
