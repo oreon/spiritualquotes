@@ -8,28 +8,26 @@
 <ion-content padding>
   <h3>Constantly stay immersed in Naam !</h3>
 
-  <ion-list no-lines>
-    <form [formGroup]="settingsForm">
-      <ion-item>
-        <ion-label floating>Start</ion-label>
-        <ion-input formControlName="start" type="number"></ion-input>
-      </ion-item>
+  <form [formGroup]="settingsForm">
+    <ion-item>
+      <ion-label>Start Time</ion-label>
+      <ion-datetime displayFormat="hh/mm:A" formControlName="start"></ion-datetime>
+    </ion-item>
 
-      <ion-item>
-        <ion-label floating>End</ion-label>
-        <ion-input formControlName="end" type="number"></ion-input>
-      </ion-item>
+    <ion-item>
+      <ion-label>End Time</ion-label>
+      <ion-datetime displayFormat="hh/mm:A" formControlName="end"></ion-datetime>
+    </ion-item>
 
-      <ion-item>
-        <ion-label floating>Frequency</ion-label>
-        <ion-select formControlName="freq">
-          <ion-option value="30" checked="true">30 minutes</ion-option>
-          <ion-option value="60">1 Hour</ion-option>
-          <ion-option value="120">2 Hours</ion-option>
-        </ion-select>
-      </ion-item>
-    </form>
-  </ion-list>
+    <ion-item>
+      <ion-label>Frequency</ion-label>
+      <ion-select formControlName="freq">
+        <ion-option value="30" checked="true">30 minutes</ion-option>
+        <ion-option value="60">1 Hour</ion-option>
+        <ion-option value="120">2 Hours</ion-option>
+      </ion-select>
+    </ion-item>
+  </form>
 
   <button ion-button full color="primary" (click)="save()">
     Create Account!

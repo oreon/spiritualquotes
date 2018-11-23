@@ -17,6 +17,9 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 import moment from 'moment';
 
 
+const DEFAULT_SETTINGS = {noOfNotifs: 5, frequency:60, startTime: moment({ hour:9, minute:0 }), endTime: moment({ hour:19, minute:0 })};
+const ALL_DATA = 'allData';
+
 
 @Component({
   templateUrl: 'app.html'
@@ -28,8 +31,6 @@ export class MyApp {
   rootPage = HelloIonicPage;
   pages: Array<{title: string, component: any}>;
   quotes: any[];
-
-  DEFAULT_SETTINGS = {noOfNotifs: 5, timeGap:60, startTime: moment({ hour:9, minute:0 }), endTime: moment({ hour:19, minute:0 })};
 
   constructor(
     public platform: Platform,
@@ -82,13 +83,13 @@ export class MyApp {
       .then(x => {
         console.log(x);
         console.log(x.length);
-        if(!x || x.length < this.DEFAULT_SETTINGS.noOfNotifs) {
+        if(!x || x.length < DEFAULT_SETTINGS.noOfNotifs) {
           console.log("Here we are supposed to do some shit");
-          this.storage.get('quotesData').then((quoteData) => {
+          this.storage.get(ALL_DATA).then((quoteData) => {
             console.log('Quotes from local storage', quoteData);
-            const timeGap = (quoteData && quoteData.timeGap) ? quoteData.timeGap : this.DEFAULT_SETTINGS.timeGap;
-            const startTime = (quoteData && quoteData.startTime) ? quoteData.startTime : this.DEFAULT_SETTINGS.startTime;
-            const endTime = (quoteData && quoteData.endTime) ? quoteData.endTime : this.DEFAULT_SETTINGS.endTime;
+            const frequency = (quoteData && quoteData.frequency) ? quoteData.frequency : DEFAULT_SETTINGS.frequency;
+            const startTime = (quoteData && quoteData.startTime) ? moment(quoteData.startTime, 'hh:mm') : DEFAULT_SETTINGS.startTime;
+            const endTime = (quoteData && quoteData.endTime) ? moment(quoteData.endTime, 'hh:mm') : DEFAULT_SETTINGS.endTime;
             let fixedDate = moment();
 
             if(x && x.length) {
@@ -102,14 +103,14 @@ export class MyApp {
             console.log(fixedDate);
             if(quoteData && quoteData.quotes && quoteData.quotes.length) {
               if(quoteData.quoteNo < quoteData.quotes.length) {
-                for(let i=quoteData.quoteNo; i < (quoteData.quoteNo + this.DEFAULT_SETTINGS.noOfNotifs); i++) {
+                for(let i=quoteData.quoteNo; i < (quoteData.quoteNo + DEFAULT_SETTINGS.noOfNotifs); i++) {
                   if(i<quoteData.quotes.length) {
-                    let triggerTime = moment(fixedDate).add(((i-quoteData.quoteNo)+1)*timeGap, 'minutes');                    
-                    this.scheduleLocalNotif(i, quoteData.quotes[i].text, triggerTime, ((i-quoteData.quoteNo)+1)*timeGap, startTime, endTime);
+                    let triggerTime = moment(fixedDate).add(((i-quoteData.quoteNo)+1)*frequency, 'minutes');                    
+                    this.scheduleLocalNotif(i, quoteData.quotes[i].text, triggerTime, ((i-quoteData.quoteNo)+1)*frequency, startTime, endTime);
                   }
                 }
-                quoteData.quoteNo += this.DEFAULT_SETTINGS.noOfNotifs;
-                this.storage.set('quotesData', quoteData);
+                quoteData.quoteNo += DEFAULT_SETTINGS.noOfNotifs;
+                this.storage.set(ALL_DATA, quoteData);
               } else {
                 console.log("Gurbani Quotes in local storage finished. Please download more!");
               }
@@ -117,10 +118,10 @@ export class MyApp {
               this.fireService.getRecords().subscribe(x => {
                 console.log(x);
                 this.quotes = x;
-                this.storage.set('quotesData', {'quotes': this.quotes, quoteNo: this.DEFAULT_SETTINGS.noOfNotifs});
-                for(let i=0; i < this.DEFAULT_SETTINGS.noOfNotifs; i++) {
-                  let triggerTime = moment(fixedDate).add((i+1)*timeGap, 'minutes');
-                  this.scheduleLocalNotif(i, this.quotes[i].text, triggerTime, (i+1)*timeGap, startTime, endTime);
+                this.storage.set(ALL_DATA, {'quotes': this.quotes, quoteNo: DEFAULT_SETTINGS.noOfNotifs});
+                for(let i=0; i < DEFAULT_SETTINGS.noOfNotifs; i++) {
+                  let triggerTime = moment(fixedDate).add((i+1)*frequency, 'minutes');
+                  this.scheduleLocalNotif(i, this.quotes[i].text, triggerTime, (i+1)*frequency, startTime, endTime);
                 }
               });
             }
@@ -140,14 +141,14 @@ export class MyApp {
     this.nav.setRoot(page.component);
   }
 
-  scheduleLocalNotif(i, quoteText, triggerTime, timeGap, startTime, endTime) {
+  scheduleLocalNotif(i, quoteText, triggerTime, frequency, startTime, endTime) {
     
     if (triggerTime.isBefore(startTime)) {
       triggerTime = moment(startTime);
-      triggerTime.add(timeGap, 'minutes');
+      triggerTime.add(frequency, 'minutes');
     } else if (triggerTime.isAfter(endTime)) {
       triggerTime = moment(startTime).add(1, 'days');
-      triggerTime.add(timeGap, 'minutes');
+      triggerTime.add(frequency, 'minutes');
     }
 
     console.log(triggerTime);
