@@ -15,6 +15,7 @@ import { BaseFireService } from '../base/BaseFireService';
 import { Storage } from '@ionic/storage';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import moment from 'moment';
+import { QuoteCardsPage } from '../pages/quote-cards/quote-cards';
 
 
 const DEFAULT_SETTINGS = {noOfNotifs: 5, frequency:60, startTime: moment({ hour:9, minute:0 }), endTime: moment({ hour:19, minute:0 })};
@@ -48,7 +49,8 @@ export class MyApp {
     // set our app's pages
     this.pages = [
       { title: 'Settings', component: HelloIonicPage },
-      { title: 'Quotes', component: ListPage }
+      { title: 'Quotes', component: ListPage },
+      { title: 'QuoteCards', component: QuoteCardsPage }
     ];
   }
 

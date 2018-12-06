@@ -19,6 +19,8 @@ import { BaseFireService } from '../base/BaseFireService';
 import { FirestoreService } from '../base/firestore.service';
 import { SettingsProvider } from '../providers/settings/settings';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { QuoteCardsPage } from '../pages/quote-cards/quote-cards';
+import { QuoteCardsPageModule } from '../pages/quote-cards/quote-cards.module';
 
 var config = {
   apiKey: "AIzaSyCTyxpg77b9mj-PTAvqLnwzjXlmsInLBkk",
@@ -54,15 +56,18 @@ export const firebaseConfig = {
     AngularFireAuthModule,
     AngularFirestoreModule,
     IonicStorageModule.forRoot(),
+    QuoteCardsPageModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+   
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HelloIonicPage,
     ItemDetailsPage,
-    ListPage
+    ListPage,
+    QuoteCardsPage
   ],
   providers: [
     StatusBar,
