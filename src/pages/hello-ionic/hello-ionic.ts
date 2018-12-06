@@ -1,50 +1,50 @@
-import { Component } from '@angular/core';
-import { Observable} from 'rxjs'
-import { Platform, NavController } from 'ionic-angular';
-import { BaseEntity } from '../../base/base-entity';
-import { BaseFireService } from '../../base/BaseFireService';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { SettingsProvider } from '../../providers/settings/settings';
+import { Component } from "@angular/core";
+import { Observable } from "rxjs";
+import { Platform, NavController } from "ionic-angular";
+import { BaseEntity } from "../../base/base-entity";
+import { BaseFireService } from "../../base/BaseFireService";
+import { FormBuilder, Validators, FormGroup } from "@angular/forms";
+import { SettingsProvider } from "../../providers/settings/settings";
 
-
-export interface Quote extends BaseEntity{
-  text:string
+export interface Quote extends BaseEntity {
+  text: string;
 }
 
 @Component({
-  selector: 'page-hello-ionic',
-  templateUrl: 'hello-ionic.html'
+  selector: "page-hello-ionic",
+  templateUrl: "hello-ionic.html"
 })
 export class HelloIonicPage {
-
   items: any[];
   public settingsForm: FormGroup;
 
   constructor(
-    public navCtrl: NavController, 
-    private fireService :BaseFireService<Quote>,
+    public navCtrl: NavController,
+    private fireService: BaseFireService<Quote>,
     public plt: Platform,
     private fb: FormBuilder,
-    private settings:SettingsProvider
+    private settings: SettingsProvider
   ) {
-    this.fireService.getRecords()
-    .subscribe(
-      x => this.items = x);
+    this.fireService.getRecords().subscribe(x => (this.items = x));
     this.createForm();
+
+    this.settings.getSettings().then(x => {
+      this.settingsForm.get("start").setValue(x["start"]);
+      this.settingsForm.get("end").setValue(x["end"]);
+      this.settingsForm.get("frequency").setValue(x["frequency"]);
+    });
   }
 
-  save(){
+  save() {
     console.log(this.settingsForm.value);
-    this.settings.setSettings(this.settingsForm.value)
+    this.settings.setSettings(this.settingsForm.value);
   }
 
   private createForm(): void {
     this.settingsForm = this.fb.group({
-      start: ['9', []],
-      end: ['7', []],
-      freq: ['60', [Validators.required]],
+      start: ["9", []],
+      end: ["7", []],
+      frequency: ["60", [Validators.required]]
     });
   }
-
-
 }

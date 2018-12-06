@@ -3,18 +3,21 @@
     <button menuToggle *ngIf="!selectedItem">
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Item Details</ion-title>
+    <ion-title> {{selectedItem.text | slice:1:20}} </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content *ngIf="selectedItem">
   <h3 text-center >
-    {{selectedItem.text | slice:1:20}}
+    
     <ion-icon [name]="selectedItem.icon"></ion-icon>
   </h3>
-  <h4 text-center *ngIf="selectedItem">
-    <b>{{selectedItem.text}}</b>
-  </h4>
+  <!-- <h4 text-center *ngIf="selectedItem">
+    <b></b>
+  </h4> -->
+  <p>
+    {{selectedItem.text}}
+  </p>
   <p>
       {{selectedItem.explanation}}
   </p>

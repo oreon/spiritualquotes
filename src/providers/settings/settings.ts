@@ -26,11 +26,12 @@ export class SettingsProvider {
   async setSettings(data){
     let allData = await this.storage.get(ALL_DATA);
     if(!allData) {
-      allData = {startTime: data.start, endTime: data.end, frequency: data.freq}
+      allData = {start: data.start, end: data.end, 
+        frequency: data.frequency}
     } else {
-      allData.startTime = data.start;
-      allData.endTime = data.end;
-      allData.frequency = data.freq;
+      allData.start = data.start;
+      allData.end = data.end;
+      allData.frequency = data.frequency;
     }
     this.storage.set(ALL_DATA, allData);
   }

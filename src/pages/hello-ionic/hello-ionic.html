@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle><ion-icon name="menu"></ion-icon></button>
-    <ion-title>Hello Ionic</ion-title>
+    <ion-title>Preferences</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -11,17 +11,17 @@
   <form [formGroup]="settingsForm">
     <ion-item>
       <ion-label>Start Time</ion-label>
-      <ion-datetime displayFormat="hh/mm:A" formControlName="start"></ion-datetime>
+      <ion-datetime displayFormat="hh:A" formControlName="start"></ion-datetime>
     </ion-item>
 
     <ion-item>
       <ion-label>End Time</ion-label>
-      <ion-datetime displayFormat="hh/mm:A" formControlName="end"></ion-datetime>
+      <ion-datetime displayFormat="hh:A" formControlName="end"></ion-datetime>
     </ion-item>
 
     <ion-item>
       <ion-label>Frequency</ion-label>
-      <ion-select formControlName="freq">
+      <ion-select formControlName="frequency">
         <ion-option value="30" checked="true">30 minutes</ion-option>
         <ion-option value="60">1 Hour</ion-option>
         <ion-option value="120">2 Hours</ion-option>
@@ -30,14 +30,14 @@
   </form>
 
   <button ion-button full color="primary" (click)="save()">
-    Create Account!
+    Save settings
   </button>
 
   <!-- <button ion-button full (click)="schedule()">Sched</button> -->
 
-  <ion-list>
+  <!-- <ion-list>
     <ion-item class="text" *ngFor="let item of items">
       {{ item.text }}
     </ion-item>
-  </ion-list>
+  </ion-list> -->
 </ion-content>
