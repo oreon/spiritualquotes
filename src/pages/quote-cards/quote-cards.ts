@@ -13,6 +13,10 @@ import {
 import { Http } from '@angular/http';
 import 'rxjs/Rx';
 import { HttpClient } from '@angular/common/http';
+import { FirestoreService } from '../../base/firestore.service';
+import { BaseFireService } from '../../base/BaseFireService';
+import { Quote } from '../hello-ionic/hello-ionic';
+import { Observable } from 'rxjs';
 
 /**
  * Generated class for the QuoteCardsPage page.
@@ -34,8 +38,14 @@ export class QuoteCardsPage {
   cards: Array<any>;
   stackConfig: StackConfig;
   recentCard: string = '';
+  items: Observable<any[]>;
   
-  constructor(private http: HttpClient) {
+  
+  constructor(private http: HttpClient, 
+    private fireService :BaseFireService<Quote>,) {
+
+    
+      this.items = this.fireService.getRecords()
     this.stackConfig = {
       throwOutConfidence: (offsetX, offsetY, element) => {
         return Math.min(Math.abs(offsetX) / (element.offsetWidth/2), 1);
@@ -47,6 +57,7 @@ export class QuoteCardsPage {
         return 800;
       }
     };
+    this.items = this.fireService.getRecords()
   }
   
   ngAfterViewInit() {
