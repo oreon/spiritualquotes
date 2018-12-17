@@ -21,6 +21,7 @@ import { SettingsProvider } from '../providers/settings/settings';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QuoteCardsPage } from '../pages/quote-cards/quote-cards';
 import { QuoteCardsPageModule } from '../pages/quote-cards/quote-cards.module';
+import { Network } from '@ionic-native/network';
 
 var config = {
   apiKey: "AIzaSyCTyxpg77b9mj-PTAvqLnwzjXlmsInLBkk",
@@ -77,7 +78,8 @@ export const firebaseConfig = {
     BaseFireService,
     FirestoreService,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    SettingsProvider
+    SettingsProvider,
+    Network
   ]
 })
 export class AppModule {}

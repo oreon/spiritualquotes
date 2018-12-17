@@ -108,7 +108,7 @@ export class MyApp {
                 for(let i=quoteData.quoteNo; i < (quoteData.quoteNo + DEFAULT_SETTINGS.noOfNotifs); i++) {
                   if(i<quoteData.quotes.length) {
                     let triggerTime = moment(fixedDate).add(((i-quoteData.quoteNo)+1)*frequency, 'minutes');                    
-                    this.scheduleLocalNotif(i, quoteData.quotes[i].text, triggerTime, ((i-quoteData.quoteNo)+1)*frequency, startTime, endTime);
+                    this.scheduleLocalNotif(i, quoteData.quotes[i], triggerTime, ((i-quoteData.quoteNo)+1)*frequency, startTime, endTime);
                   }
                 }
                 quoteData.quoteNo += DEFAULT_SETTINGS.noOfNotifs;
@@ -123,13 +123,16 @@ export class MyApp {
                 this.storage.set(ALL_DATA, {'quotes': this.quotes, quoteNo: DEFAULT_SETTINGS.noOfNotifs});
                 for(let i=0; i < DEFAULT_SETTINGS.noOfNotifs; i++) {
                   let triggerTime = moment(fixedDate).add((i+1)*frequency, 'minutes');
-                  this.scheduleLocalNotif(i, this.quotes[i].text, triggerTime, (i+1)*frequency, startTime, endTime);
+                  this.scheduleLocalNotif(i, this.quotes[i], triggerTime, (i+1)*frequency, startTime, endTime);
                 }
               });
             }
           });
         }
       });
+      this.localNotifications.on('click').subscribe(notif => {
+        console.log(notif);
+      })
     } else {
       console.log("We are on a browser!!");
     }
@@ -143,7 +146,7 @@ export class MyApp {
     this.nav.setRoot(page.component);
   }
 
-  scheduleLocalNotif(i, quoteText, triggerTime, frequency, startTime, endTime) {
+  scheduleLocalNotif(i, quote, triggerTime, frequency, startTime, endTime) {
     
     if (triggerTime.isBefore(startTime)) {
       triggerTime = moment(startTime);
@@ -158,12 +161,13 @@ export class MyApp {
     this.localNotifications.schedule({
       id: i,
       title: 'Gurmat Tuk',
-      text: quoteText,
+      text: quote.text,
       trigger: { at:  new Date(triggerTime.format())},
       led: 'FFF000',
       sound: this.platform.is('android') ? 'file://assets/sounds/sound.mp3': 'file://assets/sounds/beep.caf',
       vibrate: true,
-      icon: 'file://assets/imgs/icon.png'
+      icon: 'file://assets/imgs/icon.png',
+      data: quote
     });
   }
 
