@@ -25,6 +25,8 @@
         <ion-option value="30" checked="true">30 minutes</ion-option>
         <ion-option value="60">1 Hour</ion-option>
         <ion-option value="120">2 Hours</ion-option>
+        <ion-option value="240">4 Hours</ion-option>
+        <ion-option value="480">8 Hours</ion-option>
       </ion-select>
     </ion-item>
   </form>
@@ -35,9 +37,10 @@
 
   <!-- <button ion-button full (click)="schedule()">Sched</button> -->
 
-  <!-- <ion-list>
-    <ion-item class="text" *ngFor="let item of items">
-      {{ item.text }}
+  <ion-list *ngIf="items && items.length">
+    <ion-item *ngFor="let item of items">
+      <p>{{ item.text }}</p>
+      <p>at {{item.trigger.at | date:'medium'}}</p>
     </ion-item>
-  </ion-list> -->
+  </ion-list>
 </ion-content>
