@@ -124,7 +124,7 @@ export class MyApp {
                     this.scheduleLocalNotif(i, quoteData.quotes[i], triggerTime);
                   }
                 }
-                this.scheduleLocalNotif(DEFAULT_SETTINGS.noOfNotifs, this.quotes[DEFAULT_SETTINGS.noOfNotifs], startTimeTrigger);
+                this.scheduleLocalNotif(DEFAULT_SETTINGS.noOfNotifs, quoteData.quotes[quoteData.quoteNo + DEFAULT_SETTINGS.noOfNotifs], startTimeTrigger);
                 quoteData.quoteNo += DEFAULT_SETTINGS.noOfNotifs + 1;
                 this.storage.set(ALL_DATA, quoteData);
               } else {
@@ -134,7 +134,7 @@ export class MyApp {
                     this.scheduleLocalNotif(i, quoteData.quotes[i], triggerTime);
                   }
                 }
-                this.scheduleLocalNotif(DEFAULT_SETTINGS.noOfNotifs, this.quotes[DEFAULT_SETTINGS.noOfNotifs], startTimeTrigger);
+                this.scheduleLocalNotif(DEFAULT_SETTINGS.noOfNotifs, quoteData.quotes[DEFAULT_SETTINGS.noOfNotifs], startTimeTrigger);
                 quoteData.quoteNo += DEFAULT_SETTINGS.noOfNotifs + 1;
                 this.storage.set(ALL_DATA, quoteData);
               }
