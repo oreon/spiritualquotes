@@ -90,8 +90,8 @@ export class MyApp {
           this.storage.get(ALL_DATA).then((quoteData) => {
             console.log('Quotes from local storage', quoteData);
             const frequency = (quoteData && quoteData.frequency) ? quoteData.frequency : DEFAULT_SETTINGS.frequency;
-            const startTime = (quoteData && quoteData.startTime) ? moment(quoteData.startTime, 'hh:mm') : DEFAULT_SETTINGS.startTime;
-            const endTime = (quoteData && quoteData.endTime) ? moment(quoteData.endTime, 'hh:mm') : DEFAULT_SETTINGS.endTime;
+            const startTime = (quoteData && quoteData.start) ? moment(quoteData.start, 'hh:mm') : DEFAULT_SETTINGS.startTime;
+            const endTime = (quoteData && quoteData.end) ? moment(quoteData.end, 'hh:mm') : DEFAULT_SETTINGS.endTime;
             let startTimeTrigger = moment(startTime).add(1, 'days');
             if(moment().isBefore(startTime)){
               startTimeTrigger = moment(startTime);
