@@ -16,6 +16,7 @@ import { Storage } from '@ionic/storage';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import moment from 'moment';
 import { QuoteCardsPage } from '../pages/quote-cards/quote-cards';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
 
 const DEFAULT_SETTINGS = {noOfNotifs: 5, frequency:60, startTime: moment({ hour:7, minute:0 }), endTime: moment({ hour:19, minute:0 })};
@@ -43,8 +44,24 @@ export class MyApp {
     private fireService: BaseFireService<Quote>,
     private storage: Storage,
     private localNotifications: LocalNotifications,
+    private backgroundMode: BackgroundMode
   ) {
-    this.initializeApp();
+    //this.initializeApp();
+
+    this.platform.ready().then(() => {
+      if(this.platform.is('android') || this.platform.is('ios')){
+        this.backgroundMode.enable();
+      }
+    });
+
+    this.localNotifications.schedule({
+      text: ' please breathe deep  ',
+       //trigger: { every: { minute: 1 }, count: 500 }, => not working 
+       trigger: {at: new Date(new Date().getTime() + 6000)}, 
+       led: 'FF0000',
+       sound: null
+   });
+
 
     // set our app's pages
     this.pages = [
@@ -54,7 +71,15 @@ export class MyApp {
     ];
   }
 
+  isBGActive(){
+    if(this.platform.is('android')){
+      return this.backgroundMode.isActive();
+    }else 
+    return true;
+  }
+
   initializeApp() {
+    
     // this.afAuth.auth
     // .signInWithPopup(new auth.GoogleAuthProvider())
     // .then
@@ -72,6 +97,9 @@ export class MyApp {
     //   },
     // )
     this.platform.ready().then(() => {
+      if(this.platform.is('android') || this.platform.is('ios')){
+      this.backgroundMode.enable();
+      }
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       this.statusBar.styleDefault();
@@ -86,7 +114,7 @@ export class MyApp {
       .then(x => {
         console.log(x);
         console.log(x.length);
-          console.log("Here we are supposed to do some shit");
+         
           this.storage.get(ALL_DATA).then((quoteData) => {
             console.log('Quotes from local storage', quoteData);
             const frequency = (quoteData && quoteData.frequency) ? quoteData.frequency : DEFAULT_SETTINGS.frequency;

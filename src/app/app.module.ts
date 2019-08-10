@@ -22,6 +22,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QuoteCardsPage } from '../pages/quote-cards/quote-cards';
 import { QuoteCardsPageModule } from '../pages/quote-cards/quote-cards.module';
 import { Network } from '@ionic-native/network';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
 var config = {
   apiKey: "AIzaSyCTyxpg77b9mj-PTAvqLnwzjXlmsInLBkk",
@@ -79,6 +80,7 @@ export const firebaseConfig = {
     FirestoreService,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     SettingsProvider,
+    BackgroundMode,
     Network
   ]
 })

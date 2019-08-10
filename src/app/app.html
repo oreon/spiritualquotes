@@ -6,6 +6,7 @@
   </ion-header>
 
   <ion-content>
+    BG {{isBGActive()}}
     <ion-list>
       <button ion-item *ngFor="let p of pages" (click)="openPage(p)">
         {{p.title}}
